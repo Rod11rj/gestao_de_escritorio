@@ -44,3 +44,5 @@ Veja também [`CITATION.cff`](CITATION.cff) ou o botão **Cite this repository**
 ## Licença
 
 [MIT](LICENSE)
+
+Software desenvolvido com apoio de Inteligência Artificial
