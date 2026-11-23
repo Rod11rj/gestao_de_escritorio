@@ -34,12 +34,6 @@ tests/          testes automatizados
 
 Requer Node.js 18 ou superior.
 
-```bash
-npm install
-npx playwright install chromium
-npm test
-npm run lint
-```
 
 ## Citação
 
