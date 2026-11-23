@@ -4,10 +4,6 @@ Sistema web para organizar o trabalho de uma equipe em seções. Cada seção te
 
 Funciona no navegador, sem servidor e sem instalação. Os dados ficam no próprio navegador.
 
-<!-- Após o primeiro release, substitua XXXXXXX pelo DOI do Zenodo:
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
--->
-
 ## Funcionalidades
 
 - Seções criadas e organizadas pelo usuário
@@ -36,12 +32,6 @@ tests/          testes automatizados
 
 Requer Node.js 18 ou superior.
 
-```bash
-npm install
-npx playwright install chromium
-npm test
-npm run lint
-```
 
 ## Citação
 
