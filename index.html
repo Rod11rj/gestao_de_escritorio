@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<!-- Política de segurança: a página só executa os próprios arquivos (js/ e css/),
+     carrega apenas as fontes do Google e não envia dados para nenhum servidor. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão da Equipe</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231F5FAD'/%3E%3Crect x='7' y='8' width='5' height='16' rx='1.5' fill='white'/%3E%3Crect x='14' y='8' width='5' height='11' rx='1.5' fill='white' opacity='.85'/%3E%3Crect x='21' y='8' width='5' height='7' rx='1.5' fill='white' opacity='.7'/%3E%3C/svg%3E">
+<meta name="description" content="Gestão da Equipe — tarefas em quadro Kanban e calendário de atividades, organizados em seções. Funciona no navegador, sem servidor.">
+<meta name="theme-color" content="#0F2B4C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/kanban.css">
+<link rel="stylesheet" href="css/modals.css">
+<link rel="stylesheet" href="css/calendar.css">
+<link rel="stylesheet" href="css/editors.css">
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/print.css">
+<script src="js/config.js" defer></script>
+<script src="js/util.js" defer></script>
+<script src="js/dom.js" defer></script>
+<script src="js/schema.js" defer></script>
+<script src="js/migration.js" defer></script>
+<script src="js/preferences.js" defer></script>
+<script src="js/store.js" defer></script>
+<script src="js/print-service.js" defer></script>
+<script src="js/modules/section-module.js" defer></script>
+<script src="js/modules/kanban-board.js" defer></script>
+<script src="js/modules/activity-calendar.js" defer></script>
+<script src="js/dialogs/task-modal.js" defer></script>
+<script src="js/dialogs/activity-modal.js" defer></script>
+<script src="js/dialogs/section-editor.js" defer></script>
+<script src="js/dialogs/color-picker.js" defer></script>
+<script src="js/dialogs/group-editor.js" defer></script>
+<script src="js/section.js" defer></script>
+<script src="js/app.js" defer></script>
+<script src="js/theme-toggle.js" defer></script>
+<script src="js/main.js" defer></script>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <nav class="module-nav" id="sectionNav">
+      <div class="nav-label-row">
+        <span class="nav-label">Seções</span>
+        <button class="nav-edit-btn" id="editSectionsBtn" type="button" title="Criar, renomear, reordenar ou excluir seções">Editar</button>
+      </div>
+      <!-- itens preenchidos pelo JavaScript a partir da lista de seções salva -->
+    </nav>
+    <div class="sidebar-section">
+      <span class="nav-label">Backup</span>
+      <button class="sidebar-btn" id="exportBtn" type="button">Exportar backup</button>
+      <button class="sidebar-btn" id="importBtn" type="button">Importar backup</button>
+    </div>
+    <div class="sidebar-section">
+      <span class="nav-label">Aparência</span>
+      <button class="sidebar-btn sidebar-toggle" id="darkModeBtn" type="button" role="switch" aria-checked="false">Modo escuro<span class="switch" aria-hidden="true"></span></button>
+    </div>
+    <div class="sidebar-foot">Os dados ficam salvos neste navegador. Faça backup regularmente com o botão acima — se limpar os dados do navegador, o que não tiver sido exportado se perde.</div>
+  </aside>
+
+  <main class="main" id="mainArea">
+    <section class="empty-state" id="emptyState" hidden>
+      <h1>Crie sua primeira seção</h1>
+      <p>As seções organizam o seu trabalho. Cada seção tem suas próprias Tarefas e Calendário.</p>
+      <form id="firstSectionForm" novalidate>
+        <input type="text" id="firstSectionInput" placeholder="Nome da seção (ex.: Administração)" maxlength="40" autocomplete="off" aria-label="Nome da seção">
+        <button class="btn btn-primary" type="submit">Criar seção</button>
+      </form>
+      <p class="section-editor-error" id="firstSectionError" role="alert"></p>
+    </section>
+    <!-- cada seção monta aqui suas próprias telas (Tarefas e Calendário) -->
+  </main>
+</div>
+
+<!-- ============ Modelos de tela (clonados por seção) ============ -->
+<template id="tplKanban">
+  <div class="view view-kanban">
+    <header class="board-header">
+      <span class="section-eyebrow"></span>
+      <div class="title-row">
+        <h1 class="board-title" contenteditable="true" spellcheck="false"></h1>
+        <div class="header-actions no-print">
+          <button class="btn btn-ghost btn-small js-export-pdf" type="button">Exportar PDF</button>
+        </div>
+      </div>
+      <p class="print-only js-print-stamp"></p>
+      <div class="controls-row no-print">
+        <input type="search" class="search-input js-search" placeholder="Buscar tarefa ou responsável…">
+        <div class="filter-group js-group-filter"><!-- preenchido a partir dos grupos do quadro --></div>
+        <button class="btn btn-ghost btn-small js-manage-groups" type="button" title="Criar, renomear, trocar a cor ou excluir grupos">Grupos…</button>
+      </div>
+    </header>
+    <div class="board"></div>
+  </div>
+</template>
+
+<template id="tplCalendar">
+  <div class="view view-calendar">
+    <header class="board-header">
+      <span class="section-eyebrow"></span>
+      <div class="title-row">
+        <h1>Calendário de atividades</h1>
+        <div class="header-actions no-print">
+          <button class="btn btn-ghost btn-small js-export-pdf" type="button">Exportar PDF</button>
+        </div>
+      </div>
+      <p class="print-only js-print-stamp"></p>
+    </header>
+
+    <section class="planning-section">
+      <div class="planning-toolbar no-print">
+        <div class="month-nav">
+          <button class="btn btn-ghost btn-small js-prev" type="button" aria-label="Mês anterior">‹</button>
+          <h2 class="month-label js-month-label"></h2>
+          <button class="btn btn-ghost btn-small js-next" type="button" aria-label="Mês seguinte">›</button>
+          <button class="btn btn-ghost btn-small js-today" type="button">Hoje</button>
+        </div>
+        <div class="planning-actions">
+          <button class="btn btn-ghost btn-small js-add-entity" type="button">+ Nova entidade</button>
+          <button class="btn btn-primary btn-small js-add-activity" type="button">+ Nova atividade</button>
+          <button class="btn btn-danger btn-small js-clear-month" type="button">Apagar dados deste mês</button>
+        </div>
+      </div>
+      <h2 class="month-label print-only js-month-label-print"></h2>
+
+      <div class="calendar-scroll">
+        <table class="calendar-table"></table>
+      </div>
+
+      <div class="requests-section">
+        <div class="requests-head">
+          <h3>Solicitações em aberto</h3>
+          <p class="requests-hint no-print">Pedidos de inclusão de eventos que ainda não entraram no calendário.</p>
+        </div>
+        <div class="requests-list"></div>
+        <div class="requests-add no-print">
+          <input type="text" class="js-new-request" placeholder="Nova solicitação">
+          <button class="btn btn-primary btn-small js-add-request" type="button">Adicionar</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</template>
+
+<!-- ============ Janelas compartilhadas entre as seções ============ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="taskTitleInput">
+    <div class="modal-head">
+      <input type="text" id="taskTitleInput" placeholder="Título da tarefa">
+      <button class="close-btn" id="closeModalBtn" type="button" aria-label="Fechar">✕</button>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label id="taskGroupLabel">Grupo</label>
+        <div class="group-picker" id="taskGroupPicker">
+          <button type="button" class="group-picker-btn" id="taskGroup" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="taskGroupLabel taskGroup">
+            <span class="gp-dot"></span><span class="gp-text"></span><span class="gp-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="group-menu" id="taskGroupMenu" role="listbox" aria-labelledby="taskGroupLabel" hidden></div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="taskPriority">Prioridade</label>
+        <select id="taskPriority">
+          <option value="baixa">Baixa</option>
+          <option value="media">Média</option>
+          <option value="alta">Alta</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="taskResponsavel">Responsável</label>
+        <input type="text" id="taskResponsavel" placeholder="Nome">
+      </div>
+      <div class="field">
+        <label for="taskPrazo">Prazo</label>
+        <input type="date" id="taskPrazo">
+      </div>
+      <div class="field field-full">
+        <label for="taskReferencia">Referência</label>
+        <input type="text" id="taskReferencia" placeholder="Nº de documento, protocolo, link…">
+      </div>
+      <div class="field field-full">
+        <label for="taskDescricao">Situação</label>
+        <textarea id="taskDescricao" placeholder="Detalhes, contexto, instruções…"></textarea>
+      </div>
+      <div class="field field-full">
+        <label>Checklist</label>
+        <div class="checklist" id="taskChecklist"></div>
+        <button type="button" class="add-checklist-btn" id="addChecklistBtn">+ Adicionar item</button>
+      </div>
+    </div>
+
+    <div class="modal-foot">
+      <span class="meta-note" id="taskMetaNote"></span>
+      <div class="modal-foot-actions">
+        <button type="button" class="btn btn-ghost btn-small" id="generateReportBtn">Gerar relatório</button>
+        <button type="button" class="btn btn-danger btn-small" id="deleteTaskBtn">Excluir tarefa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="activityModalOverlay">
+  <div class="modal" id="activityModal" role="dialog" aria-modal="true" aria-labelledby="activityTitleInput">
+    <div class="modal-head">
+      <input type="text" id="activityTitleInput" placeholder="Título da atividade">
+      <button class="close-btn" id="closeActivityModalBtn" type="button" aria-label="Fechar">✕</button>
+    </div>
+
+    <div class="field-grid">
+      <div class="field field-full">
+        <label for="activityEntity">Entidade</label>
+        <select id="activityEntity"></select>
+      </div>
+      <div class="field field-full">
+        <label>Dias do mês (selecione um ou mais)</label>
+        <div class="day-picker" id="activityDayPicker"></div>
+      </div>
+    </div>
+
+    <div class="modal-foot">
+      <span class="meta-note" id="activityMetaNote"></span>
+      <button type="button" class="btn btn-danger btn-small" id="deleteActivityBtn">Excluir atividade</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="sectionsModalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="sectionsModalTitle">
+    <div class="modal-head">
+      <h2 class="modal-title" id="sectionsModalTitle">Editar seções</h2>
+      <button class="close-btn" id="closeSectionsModalBtn" type="button" aria-label="Fechar">✕</button>
+    </div>
+    <p class="modal-hint">Renomeie clicando no nome, use as setas para mudar a ordem na barra lateral. Cada seção tem suas próprias Tarefas e Calendário.</p>
+    <div class="section-editor-list" id="sectionEditorList"></div>
+    <p class="section-editor-error" id="sectionEditorError" role="alert"></p>
+    <form class="section-editor-add" id="sectionAddForm">
+      <input type="text" id="newSectionInput" placeholder="Nome da nova seção" maxlength="40" autocomplete="off">
+      <button class="btn btn-primary btn-small" type="submit">Adicionar seção</button>
+    </form>
+    <div class="modal-foot">
+      <span class="meta-note">As alterações são salvas automaticamente.</span>
+      <button class="btn btn-small" id="sectionsDoneBtn" type="button">Concluir</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="groupsModalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="groupsModalTitle">
+    <div class="modal-head">
+      <h2 class="modal-title" id="groupsModalTitle">Grupos de tarefas</h2>
+      <button class="close-btn" id="closeGroupsModalBtn" type="button" aria-label="Fechar">✕</button>
+    </div>
+    <p class="modal-hint" id="groupsModalHint"></p>
+    <div class="section-editor-list" id="groupEditorList"></div>
+    <p class="section-editor-error" id="groupEditorError" role="alert"></p>
+    <form class="section-editor-add" id="groupAddForm">
+      <input type="text" id="newGroupInput" placeholder="Nome do novo grupo" maxlength="30" autocomplete="off">
+      <button class="btn btn-primary btn-small" type="submit">Adicionar grupo</button>
+    </form>
+    <div class="modal-foot">
+      <span class="meta-note">As alterações são salvas automaticamente.</span>
+      <button class="btn btn-small" id="groupsDoneBtn" type="button">Concluir</button>
+    </div>
+  </div>
+</div>
+
+<div class="color-popover" id="colorPopover" role="dialog" aria-label="Escolher cor do grupo" hidden>
+  <h3>Cor do grupo</h3>
+  <div class="color-grid" id="colorGrid"></div>
+  <label class="color-custom">Outra cor <input type="color" id="colorCustom" aria-label="Escolher outra cor"></label>
+</div>
+
+<input type="file" id="importInput" accept="application/json" hidden>
+<div class="print-root" id="printRoot"></div>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+/* Variáveis de design: cores dos temas claro e escuro (azul e branco).
+   Para mudar a paleta do sistema, altere apenas este arquivo. */
+
+:root{
+  --ink:#0F1E33;
+  --canvas:#F2F6FB;
+  --panel:#FFFFFF;
+  --line:#DCE4EF;
+  --line-strong:#B6C4D8;
+  --muted:#5B6B82;
+  --accent:#1F5FAD;
+  --accent-soft:#E3EDF9;
+  --steel:#2F6E9E;
+  --steel-soft:#E1EEF7;
+  --amber:#B9701F;
+  --amber-soft:#FBEBD6;
+  --danger:#B3362B;
+  --danger-soft:#FBEAE8;
+  --danger-line:#E7BDB8;
+  --sidebar-bg:#0F2B4C;
+  --primary-bg:#1F5FAD;
+  --primary-fg:#FFFFFF;
+  --primary-hover:#184E90;
+  --column-bg:#F7FAFD;
+  --head-weekend:#EAF0F8;
+  --cell-weekend:#F6F9FD;
+  --cell-today:#FFF7EA;
+  --neutral-soft:#EEF2F7;
+  --indigo-soft:#E6ECF7;
+  --indigo:#3F5583;
+  --side-text:#E8F0FA;
+  --side-muted:#8EA6C6;
+  --side-item:#C5D5EA;
+  --side-sub:#9AB0CD;
+  --side-hover:#163A63;
+  --side-active:#1C4878;
+  --side-line:#2A4C76;
+  --side-foot:#7F98B8;
+  --side-btn-line:#2F5582;
+  --side-btn-text:#D6E3F3;
+  --side-btn-hover-line:#4C77A8;
+  --side-switch-on:#4C8FE0;
+  --overlay:rgba(10,25,45,0.45);
+  --shadow-modal: 0 12px 32px rgba(10,25,45,0.22);
+  --shadow-pop: 0 8px 24px rgba(10,25,45,0.16);
+  color-scheme:light;
+  --radius:6px;
+}
+/* Modo escuro: escolhido por cada usuário no menu da conta */
+:root[data-theme="dark"]{
+  --ink:#E3EBF6;
+  --canvas:#0C1524;
+  --panel:#132036;
+  --line:#21324D;
+  --line-strong:#34496B;
+  --muted:#93A5BF;
+  --accent:#6EA8EC;
+  --accent-soft:#16304F;
+  --steel:#79AEDB;
+  --steel-soft:#13293F;
+  --amber:#E7A75E;
+  --amber-soft:#3A2B17;
+  --danger:#EF8A7C;
+  --danger-soft:#3B1F22;
+  --danger-line:#6E3A3A;
+  --sidebar-bg:#081120;
+  --primary-bg:#5B9BE8;
+  --primary-fg:#071223;
+  --primary-hover:#7AAFEE;
+  --column-bg:#101B2E;
+  --head-weekend:#16233A;
+  --cell-weekend:#111C30;
+  --cell-today:#2C2616;
+  --neutral-soft:#1B2840;
+  --indigo-soft:#1E2C47;
+  --indigo:#AFC0E0;
+  --side-text:#E3EBF6;
+  --side-muted:#7E93B2;
+  --side-item:#BCCBE0;
+  --side-sub:#8EA3C2;
+  --side-hover:#12233D;
+  --side-active:#18304F;
+  --side-line:#1E3456;
+  --side-foot:#6F84A3;
+  --side-btn-line:#24406A;
+  --side-btn-text:#CBD8EA;
+  --side-btn-hover-line:#3D6496;
+  --side-switch-on:#5B9BE8;
+  --overlay:rgba(0,0,0,0.6);
+  --shadow-modal: 0 12px 32px rgba(0,0,0,0.55);
+  --shadow-pop: 0 8px 24px rgba(0,0,0,0.5);
+  color-scheme:dark;
+}

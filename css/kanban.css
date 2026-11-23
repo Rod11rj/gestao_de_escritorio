@@ -1,0 +1,192 @@
+/* Quadro de tarefas (Kanban): colunas, cartões e selos de grupo e prioridade. */
+
+/* ---------- Board ---------- */
+.board{
+  flex:1;
+  display:flex;
+  gap:16px;
+  padding:20px 28px 28px;
+  overflow-x:auto;
+  align-items:flex-start;
+}
+.column{
+  background:var(--column-bg);
+  border:1px solid var(--line);
+  border-radius:8px;
+  width:290px;
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+  max-height:calc(100vh - 190px);
+}
+.column.drop-target{
+  border-color:var(--steel);
+  background:var(--steel-soft);
+}
+.column-head{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 12px 8px;
+}
+.column-title{
+  font-family:'Archivo', sans-serif;
+  font-weight:600;
+  font-size:14.5px;
+  flex:1;
+  outline:none;
+  padding:3px 5px;
+  margin:-3px -5px;
+  border-radius:4px;
+  min-width:20px;
+}
+.column-title:hover, .column-title:focus{
+  background:var(--panel);
+  box-shadow:0 0 0 1px var(--line-strong);
+}
+.column-count{
+  font-size:12px;
+  color:var(--muted);
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:1px 8px;
+}
+.column-menu-btn{
+  border:none;
+  background:transparent;
+  color:var(--muted);
+  padding:4px 8px;
+  border-radius:4px;
+  font-size:14px;
+  line-height:1;
+  flex-shrink:0;
+  cursor:pointer;
+}
+.column-menu-btn:hover{ background:var(--panel); color:var(--danger); }
+
+.column-body{
+  flex:1;
+  overflow-y:auto;
+  padding:4px 10px 8px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-height:60px;
+}
+.column-foot{
+  padding:8px 10px 12px;
+}
+.add-task-btn{
+  width:100%;
+  text-align:left;
+  border:1px dashed var(--line-strong);
+  background:transparent;
+  color:var(--muted);
+  padding:8px 10px;
+  border-radius:5px;
+  font-size:13px;
+}
+.add-task-btn:hover{ background:var(--panel); color:var(--ink); border-style:solid; }
+
+.add-column{
+  flex-shrink:0;
+  width:230px;
+}
+.add-column-btn{
+  width:100%;
+  border:1px dashed var(--line-strong);
+  background:transparent;
+  color:var(--muted);
+  padding:12px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:600;
+}
+.add-column-btn:hover{ background:var(--panel); color:var(--ink); }
+
+/* ---------- Task card ---------- */
+.task-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-left:3px solid var(--line-strong);
+  border-radius:5px;
+  padding:10px 11px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.task-card:hover{ border-color:var(--line-strong); border-left-color:var(--ink); }
+.task-card.dragging{ opacity:.4; }
+
+.task-title{
+  font-weight:600;
+  font-size:14px;
+  word-break:break-word;
+}
+.task-reference{
+  font-size:11.5px;
+  color:var(--muted);
+  font-family:'Archivo', sans-serif;
+  letter-spacing:.02em;
+  word-break:break-word;
+}
+.task-meta{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.badge{
+  font-size:11px;
+  font-weight:600;
+  padding:2px 7px;
+  border-radius:20px;
+}
+/* cor do grupo vem em --g (definida no elemento) */
+.badge-group{
+  background:color-mix(in srgb, var(--g) 13%, transparent);
+  color:var(--g);
+}
+:root[data-theme="dark"] .badge-group{
+  background:color-mix(in srgb, var(--g) 28%, transparent);
+  color:color-mix(in srgb, var(--g) 50%, white);
+}
+.badge-priority-alta{ background:var(--amber-soft); color:var(--amber); }
+.badge-priority-media{ background:var(--indigo-soft); color:var(--indigo); }
+.badge-priority-baixa{ background:var(--neutral-soft); color:var(--muted); }
+
+.task-foot{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-size:12px;
+  color:var(--muted);
+}
+.task-responsavel{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.avatar{
+  width:19px;height:19px;
+  border-radius:50%;
+  background:var(--primary-bg);
+  color:var(--primary-fg);
+  font-size:10px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.task-checklist-progress{
+  font-variant-numeric:tabular-nums;
+}
+.empty-column-hint{
+  font-size:12px;
+  color:var(--muted);
+  padding:14px 4px;
+  text-align:center;
+}

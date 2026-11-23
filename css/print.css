@@ -1,0 +1,167 @@
+/* Impressão / exportação em PDF e relatório de tarefa. A impressão usa sempre o tema claro. */
+
+/* ---------- Task report ---------- */
+.task-report{
+  width:700px;
+  padding:6px 4px;
+  font-family:'Source Sans 3', sans-serif;
+  color:var(--ink);
+}
+.task-report-header{
+  border-bottom:2px solid var(--ink);
+  padding-bottom:14px;
+  margin-bottom:18px;
+}
+.task-report-eyebrow{
+  display:block;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+.task-report-header h1{
+  margin:0;
+  font-size:22px;
+}
+.task-report-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px 24px;
+  margin-bottom:20px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--line);
+}
+.task-report-row{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.task-report-label{
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--muted);
+  font-weight:600;
+}
+.task-report-value{
+  font-size:14px;
+}
+.task-report-section{
+  margin-bottom:18px;
+}
+.task-report-section h3{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--muted);
+  margin:0 0 8px;
+}
+.task-report-section p{
+  white-space:pre-line;
+  margin:0;
+  font-size:13.5px;
+  line-height:1.55;
+}
+.task-report-checklist{
+  list-style:none;
+  margin:0; padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.task-report-checklist li{
+  font-size:13.5px;
+}
+.task-report-checklist li.done{
+  color:var(--muted);
+  text-decoration:line-through;
+}
+.task-report-footer{
+  margin-top:24px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+  font-size:11px;
+  color:var(--muted);
+}
+
+/* ---------- Print ---------- */
+.print-only{ display:none; }
+.print-root{
+  position:fixed;
+  top:0; left:0;
+  width:1600px;
+  visibility:hidden;
+  pointer-events:none;
+  z-index:-1;
+  background:#FFFFFF;
+}
+.print-root:empty{ width:0; }
+@media print{
+  :root, :root[data-theme="dark"]{
+    --ink:#0F1E33;
+    --canvas:#F2F6FB;
+    --panel:#FFFFFF;
+    --line:#DCE4EF;
+    --line-strong:#B6C4D8;
+    --muted:#5B6B82;
+    --accent:#1F5FAD;
+    --accent-soft:#E3EDF9;
+    --steel:#2F6E9E;
+    --steel-soft:#E1EEF7;
+    --amber:#B9701F;
+    --amber-soft:#FBEBD6;
+    --danger:#B3362B;
+    --danger-soft:#FBEAE8;
+    --danger-line:#E7BDB8;
+    --sidebar-bg:#0F2B4C;
+    --primary-bg:#1F5FAD;
+    --primary-fg:#FFFFFF;
+    --primary-hover:#184E90;
+    --column-bg:#F7FAFD;
+    --head-weekend:#EAF0F8;
+    --cell-weekend:#F6F9FD;
+    --cell-today:#FFF7EA;
+    --neutral-soft:#EEF2F7;
+    --indigo-soft:#E6ECF7;
+    --indigo:#3F5583;
+    --side-text:#E8F0FA;
+    --side-muted:#8EA6C6;
+    --side-item:#C5D5EA;
+    --side-sub:#9AB0CD;
+    --side-hover:#163A63;
+    --side-active:#1C4878;
+    --side-line:#2A4C76;
+    --side-foot:#7F98B8;
+    --side-btn-line:#2F5582;
+    --side-btn-text:#D6E3F3;
+    --side-btn-hover-line:#4C77A8;
+    --side-switch-on:#4C8FE0;
+    --overlay:rgba(10,25,45,0.45);
+    --shadow-modal: 0 12px 32px rgba(10,25,45,0.22);
+    --shadow-pop: 0 8px 24px rgba(10,25,45,0.16);
+    color-scheme:light;
+  }
+  body > *:not(.print-root){ display:none !important; }
+  body{ background:#FFFFFF; }
+  .print-root{
+    position:static;
+    width:auto;
+    visibility:visible;
+    pointer-events:auto;
+    z-index:auto;
+  }
+  .print-only{ display:block; font-size:11px; color:var(--muted); margin:0 0 8px; }
+  .board-header{ border-bottom:none; padding:0 0 8px; }
+  .board{ overflow:visible; padding:0; }
+  .column{ max-height:none; break-inside:avoid; }
+  .column-body{ overflow:visible; }
+  .task-card{ break-inside:avoid; }
+  .calendar-scroll{ overflow:visible; border:1px solid var(--line); }
+  .requests-section{ break-inside:avoid; margin-top:12px; }
+  .request-row{ break-inside:avoid; }
+  * {
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+}
