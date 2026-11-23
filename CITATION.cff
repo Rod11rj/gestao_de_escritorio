@@ -5,6 +5,7 @@ title: "Gestão da Equipe: sistema web de tarefas e calendário de atividades"
 version: 1.0.0
 date-released: "2026-11-23"
 license: MIT
+doi: 10.5281/zenodo.24484027
 authors:
   - family-names: Almeida
     given-names: Rodrigo
@@ -13,6 +14,10 @@ abstract: >-
   de uma equipe. O trabalho é organizado em seções; cada seção tem um quadro
   de tarefas (Kanban) e um calendário de atividades. Os dados ficam no
   navegador do usuário, com backup em JSON e exportação em PDF.
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24484027
+    description: Zenodo
 keywords:
   - gestão de equipes
   - kanban

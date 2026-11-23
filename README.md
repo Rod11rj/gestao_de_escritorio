@@ -1,5 +1,7 @@
 # Gestão da Equipe
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24484027.svg)](https://doi.org/10.5281/zenodo.24484027)
+
 Sistema web para organizar o trabalho de uma equipe em seções. Cada seção tem um quadro de tarefas (Kanban) e um calendário de atividades.
 
 Funciona no navegador, sem servidor e sem instalação. Os dados ficam no próprio navegador.
@@ -32,10 +34,18 @@ tests/          testes automatizados
 
 Requer Node.js 18 ou superior.
 
+```bash
+npm install
+npx playwright install chromium
+npm test
+npm run lint
+```
 
 ## Citação
 
-Veja [`CITATION.cff`](CITATION.cff) ou use o botão **Cite this repository** do GitHub.
+Almeida, R. (2026). *Gestão da Equipe: sistema web de tarefas e calendário de atividades* (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.24484027
+
+Veja também [`CITATION.cff`](CITATION.cff) ou o botão **Cite this repository** do GitHub.
 
 ## Licença
 
